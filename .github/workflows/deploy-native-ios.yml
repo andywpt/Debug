@@ -1,10 +1,10 @@
-name: Upload To TestFlight
+name: Deploy Native iOS
 
 on:
   workflow_dispatch:
 
 jobs:
-  upload_to_testflight:
+  deploy:
     name: Upload To TestFlight
     runs-on: macos-latest
     steps:
@@ -14,28 +14,24 @@ jobs:
       - name: Set up ruby environment
         uses: ruby/setup-ruby@v1
         with:
-          ruby-version: 3.3.3
+          working-directory: ios
           bundler-cache: true
-      
-      - name: Install Dependencies
-        run: |
-          brew tap leoafarias/fvm
-          brew install fvm
-          fvm install
-          fvm flutter pub get
-          fvm flutter precache --ios
 
       - name: Load passphrase from secrets
         env:
           PASSPHRASE: ${{ secrets.PASSPHRASE }}
         run: |
           cd ios/fastlane
-          bundle install --quiet
-          bundle exec pod install
           mkdir Private
           echo "$PASSPHRASE" > Private/passphrase
          
       - name: Archive and Upload
         run: |
-          cd ios/fastlane
+          sudo xcode-select -s /Applications/Xcode_16.1.app
+          sudo xcode-select -p
+          cd ios
+          bundle exec pod install
           bundle exec fastlane beta
+
+      #     ruby_version=$(grep '^ruby "\S\+"' Gemfile | sed -n 's/ruby "\([^ ]*\)".*/\1/p')
+      #     echo "RUBY_VERSION=$ruby_version" >> $GITHUB_ENV
