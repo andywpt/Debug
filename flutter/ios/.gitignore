@@ -40,6 +40,7 @@ fastlane/Preview.html
 fastlane/screenshots/**/*.png
 fastlane/test_output
 fastlane/Private/
+fastlane/debug.log
 
 # App packaging
 *.ipa
