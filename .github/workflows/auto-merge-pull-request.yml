@@ -48,4 +48,5 @@ jobs:
           PR_NUMBER: ${{ github.event.pull_request.number }}
         run: |
           gh pr review --approve "$PR_URL"
+          gh pr comment "$PR_URL" -b "Well done 👍"
           gh pr merge --admin -s "$PR_URL"
