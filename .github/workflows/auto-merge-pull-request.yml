@@ -1,4 +1,4 @@
-name: Auto merge admin pull requests
+name: Auto merge pull request from admin
 on:
   pull_request:
     branches: [main]
@@ -48,5 +48,4 @@ jobs:
           PR_NUMBER: ${{ github.event.pull_request.number }}
         run: |
           gh pr review --approve "$PR_URL"
-          gh pr comment "$PR_NUMBER" -b "Well done 👍"
           gh pr merge --admin -s "$PR_URL"
