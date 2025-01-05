@@ -1,4 +1,4 @@
-name: Auto merge pull request from admin
+name: Auto Merge PR
 on:
   pull_request:
     branches: [main]
