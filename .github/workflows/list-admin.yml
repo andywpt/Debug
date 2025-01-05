@@ -1,4 +1,4 @@
-name: List Xcode Versions
+name: List Admin
 
 on:
   workflow_dispatch:
@@ -7,9 +7,6 @@ jobs:
   check-admin:
     runs-on: ubuntu-latest
     steps:
-      - name: Set up GitHub CLI
-        uses: cli/gh-action@v2
-
       - name: Get Actor Permissions
         id: get-permissions
         env:
