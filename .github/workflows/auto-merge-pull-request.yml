@@ -59,3 +59,4 @@ jobs:
           gh pr review --approve "$PR_URL"
           gh pr comment "$PR_URL" -b "Well done 👍"
           gh pr merge --admin -s "$PR_URL"
+          
