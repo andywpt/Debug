@@ -14,7 +14,6 @@ jobs:
     steps:
       - run: |
           echo "Running tests..."
-          sleep 10
           echo "All tests passed!"
 
   all-checks-passed: 
@@ -40,8 +39,16 @@ jobs:
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
-          echo "authorized=false" >> "$GITHUB_OUTPUT"
-
+          gh api repos/${{ github.repository }}/collaborators/${{ github.actor }}/permission > response.json
+          cat response.json
+          response=$(gh api repos/${{ github.repository }}/collaborators/${{ github.actor }}/permission)
+          role_name=$(echo "$response" | jq -r '.role_name')
+          if [[ "$role_name" == "admin" ]]; then
+            echo "authorized=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "authorized=false" >> "$GITHUB_OUTPUT"
+          fi
+   
       - name: Create github app token
         id: app-token
         if: steps.check-permissions.outputs.authorized == 'true'
@@ -59,4 +66,3 @@ jobs:
           gh pr review --approve "$PR_URL"
           gh pr comment "$PR_URL" -b "Well done 👍"
           gh pr merge --admin -s "$PR_URL"
-          
