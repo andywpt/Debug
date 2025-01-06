@@ -30,18 +30,28 @@ jobs:
 
   auto-merge:
     name: Auto-Merge Admin PR After All Checks Passed
-    if: success() && ${{ contains(fromJson('["andywpt"]'), github.actor) }}
+    # if: success() && ${{ contains(fromJson('["andywpt"]'), github.actor) }}
+    if: success()
     needs: all-checks-passed
     runs-on: ubuntu-latest
     steps:
+      - name: Check permissions
+        id: check-permissions
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          echo "authorized=false" >> "$GITHUB_OUTPUT"
+
       - name: Create github app token
-        uses: actions/create-github-app-token@v1
         id: app-token
+        if: steps.check-permissions.outputs.authorized == 'true'
+        uses: actions/create-github-app-token@v1
         with:
           app-id: ${{ vars.GH_APP_ID }}
           private-key: ${{ secrets.GH_APP_PRIVATE_KEY }}
 
       - name: Approve and squash the pull request
+        if: steps.check-permissions.outputs.authorized == 'true'
         env: 
           GH_TOKEN: ${{ steps.app-token.outputs.token }}
           PR_URL: ${{github.event.pull_request.html_url}}

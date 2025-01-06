@@ -8,7 +8,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Get Actor Permissions
-        id: get-permissions
+        id: check-auto-merge-permissions
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
@@ -17,12 +17,10 @@ jobs:
           gh api repos/${{ github.repository }}/collaborators/${{ github.actor }}/permission --jq '.permission' > permission.txt
           cat permission.txt
           echo "PERMISSION=$(cat permission.txt)" >> $GITHUB_ENV
+          echo "authorized=true" >> "$GITHUB_OUTPUT"
 
       - name: Check If Admin
+        if: steps.check-permissions.outputs.authorized != 'true'
         run: |
-          if [ "$PERMISSION" == "admin" ]; then
-            echo "Actor ${{ github.actor }} is an admin."
-          else
-            echo "Actor ${{ github.actor }} is not an admin."
-            exit 1
-          fi
+          echo "Can Merge"
+        

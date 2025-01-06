@@ -2,6 +2,9 @@ import 'package:flutter_test/flutter_test.dart';
 
 void main() {
   final List<int> numbers = [11, 12, 13, 14, 15];
+
+  for (final num in numbers) {}
+
   numbers.asMap().entries.forEach((entry) {
     print("key: ${entry.key} value: ${entry.value}");
   });
