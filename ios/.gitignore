@@ -1,0 +1,15 @@
+.DS_Store
+
+# Fastlane
+fastlane/README.md
+fastlane/report.xml
+fastlane/Preview.html
+fastlane/screenshots/**/*.png
+fastlane/test_output
+fastlane/Private/
+
+# App packaging
+*.ipa
+*.dSYM.zip
+*.dSYM
+*.mobileprovision

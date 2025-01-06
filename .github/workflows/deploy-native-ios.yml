@@ -1,0 +1,37 @@
+name: Deploy Native iOS
+
+on:
+  workflow_dispatch:
+
+jobs:
+  deploy:
+    name: Upload To TestFlight
+    runs-on: macos-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up ruby environment
+        uses: ruby/setup-ruby@v1
+        with:
+          working-directory: ios
+          bundler-cache: true
+
+      - name: Load passphrase from secrets
+        env:
+          PASSPHRASE: ${{ secrets.PASSPHRASE }}
+        run: |
+          cd ios/fastlane
+          mkdir Private
+          echo "$PASSPHRASE" > Private/passphrase
+         
+      - name: Archive and Upload
+        run: |
+          sudo xcode-select -s /Applications/Xcode_16.1.app
+          sudo xcode-select -p
+          cd ios
+          bundle exec pod install
+          bundle exec fastlane beta
+
+      #     ruby_version=$(grep '^ruby "\S\+"' Gemfile | sed -n 's/ruby "\([^ ]*\)".*/\1/p')
+      #     echo "RUBY_VERSION=$ruby_version" >> $GITHUB_ENV

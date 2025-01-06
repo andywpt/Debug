@@ -1,0 +1,5 @@
+source "https://rubygems.org"
+ruby File.read(".ruby-version").strip
+
+gem "fastlane", "2.226"
+gem "cocoapods", "1.16.2"

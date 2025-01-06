@@ -1,0 +1,30 @@
+name: List Admin
+
+on:
+  workflow_dispatch:
+# https://docs.github.com/en/rest/collaborators/collaborators?apiVersion=2022-11-28#get-repository-permissions-for-a-user
+jobs:
+  check-admin:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Get Actor Permissions
+        id: check-auto-merge-permissions
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          gh api repos/${{ github.repository }}/collaborators/${{ github.actor }}/permission > response.json
+          cat response.json
+
+          response=$(gh api repos/${{ github.repository }}/collaborators/${{ github.actor }}/permission)
+          role_name=$(echo "$response" | jq -r '.role_name')
+          if [[ "$role_name" == "admin" ]]; then
+            echo "authorized=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "authorized=false" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Check If Admin
+        if: steps.check-permissions.outputs.authorized != 'true'
+        run: |
+          echo "Can Merge"
+        
