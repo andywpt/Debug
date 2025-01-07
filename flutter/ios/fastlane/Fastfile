@@ -21,12 +21,12 @@ lane :beta do
       certificate_path: "fastlane/Private/AppStore-Distribution-Certificate.p12"
     )
     configure_signing_settings(
-      bundle_id: "com.build.ios",
+      bundle_id: "try.app",
       target: "Runner",
       team_id: "ZKX4347K9W"
     )
     update_app_build_number(
-      bundle_id: "com.build.ios",
+      bundle_id: "try.app",
       target: "Runner"
     )
     archive(
