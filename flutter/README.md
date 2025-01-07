@@ -1,7 +1,15 @@
 # Flutter
 
 
-## 設定 Java 版本
+## 設定 Flutter 使用的 Java 版本
+- `flutter doctor -v` 查看 Android toolchain 的 Java version 欄位
+- 如果有裝Android Studio，會優先使用其內部的Java版本
+- 選擇其他版本 (ex: Java 17)
+```
+jenv local 17
+flutter config --jdk-dir $JAVA_HOME
+```
+
 Step 1. 用 jenv 選擇 Java 版本並使jenv更新 $JAVA_HOME
 ```
 # 安裝 java 17
@@ -39,9 +47,11 @@ java -version
 jenv doctor
 ```
 
+jenv local 17.0
+flutter config --jdk-dir $JAVA_HOME
 `flutter config --list` 查看 jdk-dir 欄位
 
-`flutter doctor -v` 查看 Android toolchain 的 Java version 欄位
+
 
 For mac, use jenv to manage java versions
 flutter config --jdk-dir $JAVA_HOME
