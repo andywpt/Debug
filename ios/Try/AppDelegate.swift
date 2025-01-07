@@ -1,8 +1,8 @@
 //
 //  AppDelegate.swift
-//  App
+//  Try
 //
-//  Created by Andy Wu on 2025/1/3.
+//  Created by Andy Wu on 2025/1/7.
 //
 
 import UIKit
