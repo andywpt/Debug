@@ -26,8 +26,8 @@ jobs:
         with:
           jobs: ${{ toJSON(needs) }}
 
-  auto-merge:
-    name: Auto-Merge Admin PR After All Checks Passed
+  after-checks-passed:
+    name: After All Checks Passed
     needs: all-checks-passed
     runs-on: macos-latest
     steps:
