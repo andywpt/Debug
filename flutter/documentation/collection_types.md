@@ -1,26 +1,12 @@
 
 ## Array 
-``` dart
-List<int> numbers = [1,2,3,4,5];
-
-// 移除全部
-numbers.clear();
-var didRemoveFirst = numbers.remove(1);
-numbers.removeAt(index)
-
-
-
-```
 | Common Operation           | Syntax                                             | Notes                         |
 | :--------------------------| :--------------------------------------------------| :-----------------------------|
-| Find index from start (end) | `indexOf`, `lastIndexOf`, `indexWhere`, `lastIndexWhere` | Returns `-1` if not found    |
-| Find element from start (end) | `firstWhere`, `lastWhere`                         | Throws if not found           |
-| Check element              | `contains`, `any`, `every`                         |                               |
-| Filter elements            | `where`, `retainWhere`, `nonNulls`, `whereType`, `take`, `takeWhile` | `where` returns a new list   |
-| Add single (multiple) element(s) | `add`, (`addAll`, `followedBy`)                  |                               |
-| Insert single (multiple) element(s) | `insert`, (`insertAll`)                         |                               |
-| Remove elements            | `remove`, `removeWhere`,`removeLast`, `skip`, `skipWhile`       |                               |
-| Remove elements within range | `removeAt`, `removeRange`                          |                               |
+| Add| `add`, `addAll`, `followedBy`, `insert`, `insertAll` |                               |
+| Remove          | `removeAt`, `removeRange`,`remove`, `removeWhere`,`removeLast`, `skip`, `skipWhile`, `clear` |  |
+| Find | `indexOf`, `lastIndexOf`, `indexWhere`, `lastIndexWhere`, `firstWhere`, `lastWhere`  | Returns `-1` if not found    |
+| Check            | `contains`, `any`, `every`                         |                               |
+| Filter           | `where`, `retainWhere`, `nonNulls`, `whereType`, `take`, `takeWhile` | `where` returns a new list   |
 | Transform                  | `map`                                              |                               |
 | Accumulate                 | `reduce`, `fold`                                   |                               |
 | Flatten                    | `expand`                                           |                               |
