@@ -144,7 +144,10 @@ end
 
 desc "Configure code signing settings in Xcode"
 lane :configure_signing_settings do |options|
-  sigh(app_identifier: options[:bundle_id])
+  sigh(
+    adhoc: true,
+    app_identifier: options[:bundle_id]
+  )
   update_code_signing_settings(
     targets: [options[:target]],
     code_sign_identity: "iPhone Distribution",
@@ -181,10 +184,10 @@ private_lane :archive do |options|
   gym(
     workspace: options[:workspace],
     scheme: options[:scheme],
-    export_method: "app-store",
-    export_options: {
-      testFlightInternalTestingOnly: true
-    },
+    export_method: "ad-hoc", #"app-store",
+    # export_options: {
+    #   testFlightInternalTestingOnly: true
+    # },
   )
 end
 
