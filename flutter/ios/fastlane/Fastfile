@@ -39,6 +39,58 @@ lane :beta do
   end
 end
 
+lane :beta_firebase do
+  begin
+    decrypt_files(
+      input_dir: "Encrypted",
+      output_dir: "Private",
+      passphrase_path: "Private/passphrase"
+    )
+    load_env_variables(
+      files: ["Private/.appstore.env"]
+    )
+    create_api_token(
+      key_id: ENV["APPSTORE_API_KEY_ID"],
+      issuer_id: ENV["APPSTORE_API_ISSUER_ID"],
+      key_filepath: "fastlane/Private/AppStore-API-Key.p8"
+    )
+    install_certificate(
+      certificate_path: "fastlane/Private/AppStore-Distribution-Certificate.p12"
+    )
+    configure_signing_settings(
+      bundle_id: "try.app",
+      target: "Runner",
+      team_id: "ZKX4347K9W"
+    )
+    update_app_build_number(
+      bundle_id: "try.app",
+      target: "Runner"
+    )
+    archive(
+      workspace: "Runner.xcworkspace",
+      scheme: "Runner"
+    )
+    firebase(
+      firebase_app_id: "1:999673154118:ios:7ba7348ce1a0f29f275847",
+      service_account_path: "fastlane/Private/Firebase-Service-Account-Key.json",
+      groups: "me",
+      notes: "First Release!",
+    )
+  ensure
+    clean_up
+  end
+end
+
+private_lane :firebase do |options|
+  release = firebase_app_distribution(
+    app: options[:firebase_app_id],
+    service_credentials_file: options[:service_account_path],
+    groups: options[:groups],
+    release_notes: options[:notes]
+  )
+  UI.message("Release: #{release}")
+end
+
 private_lane :decrypt_files do |options|
   input_dir = options[:input_dir]
   output_dir = options[:output_dir]
