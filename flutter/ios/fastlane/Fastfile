@@ -63,9 +63,10 @@ lane :deploy_firebase do
       team_id: "ZKX4347K9W"
     )
     increment_build_number_for_firebase(
-      firebase_app_id: "1:999673154118:ios:7ba7348ce1a0f29f275847",
       bundle_id: "try.app",
-      target: "Runner"
+      target: "Runner",
+      firebase_app_id: "1:999673154118:ios:7ba7348ce1a0f29f275847",
+      service_account_path: "fastlane/Private/Firebase-Service-Account-Key.json"
     )
     archive(
       workspace: "Runner.xcworkspace",
@@ -193,7 +194,8 @@ end
 
 private_lane :increment_build_number_for_firebase do |options|
   latest_release = firebase_app_distribution_get_latest_release(
-    app: options[:firebase_app_id]
+    app: options[:firebase_app_id],
+    service_credentials_file: options[:service_account_path]
   )
   latest_build_number = latest_release[:buildVersion].to_i
   increment_build_number(build_number: (latest_build_number + 1))
