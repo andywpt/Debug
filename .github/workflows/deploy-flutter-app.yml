@@ -5,7 +5,7 @@ on:
 
 jobs:
   deploy_ios_to_testflight:
-    name: Deploy iOS App To TestFlight
+    name: Deploy iOS To TestFlight
     runs-on: macos-latest
     steps:
       - name: Checkout
@@ -41,7 +41,7 @@ jobs:
           bundle exec fastlane deploy_to_testflight
 
   deploy_ios_to_firebase:
-    name: Deploy iOS App To Firebase
+    name: Deploy iOS To Firebase
     runs-on: macos-latest
     steps:
       - name: Checkout
@@ -75,3 +75,10 @@ jobs:
           cd flutter/ios
           bundle exec pod install
           bundle exec fastlane deploy_to_firebase
+  
+  deploy_android_to_firebase:
+    name: Deploy Android To Firebase
+    runs-on: macos-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
