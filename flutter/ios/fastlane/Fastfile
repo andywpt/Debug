@@ -76,7 +76,7 @@ lane :deploy_to_firebase do
       firebase_app_id: "1:999673154118:ios:7ba7348ce1a0f29f275847",
       service_account_path: "fastlane/Private/Firebase-Service-Account-Key.json",
       groups: "me",
-      notes: "Second Release 😎",
+      notes: "😎",
     )
   ensure
     clean_up
@@ -226,7 +226,7 @@ private_lane :clean_up do |options|
   ) if File.exist? File.expand_path("~/Library/Keychains/#{keychain_name}-db")
 end
 
-lane :beta_prod do
+lane :deploy_prod do
   # 平台版(Apple Store版) 正式區
   decrypt_files(
     input_dir: "Encrypted",
@@ -263,11 +263,11 @@ lane :beta_prod do
       ]
     }
   )
-  update_app_build_number(
+  increment_build_number_for_testflight(
     bundle_id: "com.fiami.luckytalk",
     target: "Runner"
   )
-  archive(
+  archive_for_testflight(
     workspace: "Runner.xcworkspace",
     scheme: "Runner"
   )
@@ -275,7 +275,7 @@ lane :beta_prod do
   clean_up
 end
 
-lane :beta_agent do
+lane :deploy_agent do
   # 代理版(ipa版) 測試區
   decrypt_files(
     input_dir: "Encrypted",
@@ -309,11 +309,11 @@ lane :beta_agent do
       ]
     }
   )
-  update_app_build_number(
+  increment_build_number_for_testflight(
     bundle_id: "com.fiami.luckytalk.agent",
     target: "Runner"
   )
-  archive(
+  archive_for_testflight(
     workspace: "Runner.xcworkspace",
     scheme: "Runner"
   )
