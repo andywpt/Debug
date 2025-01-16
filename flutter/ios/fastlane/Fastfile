@@ -2,7 +2,7 @@ opt_out_usage
 skip_docs
 default_platform(:ios)
 
-lane :deploy_testflight do
+lane :deploy_to_testflight do
   begin
     decrypt_files(
       input_dir: "Encrypted",
@@ -29,7 +29,7 @@ lane :deploy_testflight do
       bundle_id: "try.app",
       target: "Runner"
     )
-    archive(
+    archive_for_testflight(
       workspace: "Runner.xcworkspace",
       scheme: "Runner"
     )
@@ -39,7 +39,7 @@ lane :deploy_testflight do
   end
 end
 
-lane :deploy_firebase do
+lane :deploy_to_firebase do
   begin
     decrypt_files(
       input_dir: "Encrypted",
@@ -68,7 +68,7 @@ lane :deploy_firebase do
       firebase_app_id: "1:999673154118:ios:7ba7348ce1a0f29f275847",
       service_account_path: "fastlane/Private/Firebase-Service-Account-Key.json"
     )
-    archive(
+    archive_for_adhoc(
       workspace: "Runner.xcworkspace",
       scheme: "Runner"
     )

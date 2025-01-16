@@ -38,4 +38,4 @@ jobs:
         run: |
           cd flutter/ios
           bundle exec pod install
-          bundle exec fastlane deploy_testflight
+          bundle exec fastlane deploy_to_testflight
