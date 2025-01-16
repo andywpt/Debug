@@ -38,4 +38,4 @@ jobs:
         run: |
           cd flutter/ios
           bundle exec pod install
-          bundle exec fastlane beta_firebase
+          bundle exec fastlane deploy_firebase
