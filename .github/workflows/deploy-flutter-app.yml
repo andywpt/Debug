@@ -5,7 +5,7 @@ on:
 
 jobs:
   deploy_ios_to_testflight:
-    name: Upload To TestFlight
+    name: Deploy iOS App To TestFlight
     runs-on: macos-latest
     steps:
       - name: Checkout
@@ -41,7 +41,7 @@ jobs:
           bundle exec fastlane deploy_to_testflight
 
   deploy_ios_to_firebase:
-    name: Upload To TestFlight
+    name: Deploy iOS App To Firebase
     runs-on: macos-latest
     steps:
       - name: Checkout
