@@ -5,7 +5,7 @@ default_platform(:android)
 lane :deploy_to_firebase do
   begin
     firebase_app_id = "1:999673154118:android:dc16e495e96d358c275847"
-    service_account_path = "fastlane/Private/Firebase-Service-Account-Key.json"  
+    test_groups = "me"
 
     decrypt_files(
       input_dir: "Encrypted",
@@ -15,22 +15,17 @@ lane :deploy_to_firebase do
 
     increment_build_number_for_firebase(
       firebase_app_id: firebase_app_id,
-      service_account_path: service_account_path,
+      service_account_path: "fastlane/Private/Firebase-Service-Account-Key.json" ,
       gradle_file_path: "../app/build.gradle"
     )
 
-    archive_my_app
-    #author_name = `git log -1 --pretty=format:'%an'`.force_encoding("UTF-8").strip
-    author = "Andy"
-    branch = "fix/修正畫面卡頓問題"
-    commit = `git rev-parse --short=6 HEAD`.strip
-    notes = "#{branch} (#{commit})"
+    archive_app
+    
     firebase(
       firebase_app_id: firebase_app_id,
-      service_account_path: service_account_path,
+      service_account_path: "fastlane/Private/Firebase-Service-Account-Key.json" ,
       apk_path: "../build/app/outputs/flutter-apk/app-release.apk",
-      groups: "me",
-      notes: notes,
+      groups: test_groups
     )
   ensure
     clean_up
@@ -56,23 +51,24 @@ private_lane :increment_build_number_for_firebase do |options|
   sh "Scripts/update_version_code.sh #{gradle_file_path} #{latest_build_number + 1}"
 end
 
-private_lane :archive_my_app do |options|
+private_lane :archive_app do |options|
   sh "fvm flutter build apk --release"
 end
 
 private_lane :firebase do |options|
+  branch = `git branch --show-current`.strip
+  commit = `git rev-parse --short=6 HEAD`.strip
+  notes = "#{branch} (#{commit})"
+
   release = firebase_app_distribution(
     app: options[:firebase_app_id],
     service_credentials_file: options[:service_account_path],
     android_artifact_path: options[:apk_path],
     groups: options[:groups],
-    release_notes: options[:notes]
+    release_notes: notes
   )
 end
 
 private_lane :clean_up do |options|
-  keychain_name = "fastlane"
-  delete_keychain(
-    name: keychain_name
-  ) if File.exist? File.expand_path("~/Library/Keychains/#{keychain_name}-db")
+  
 end
