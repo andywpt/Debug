@@ -1,0 +1,67 @@
+opt_out_usage
+skip_docs
+default_platform(:android)
+
+lane :deploy_to_firebase do
+  begin
+    firebase_app_id = "1:999673154118:android:70ec47c4bbc2b80f275847"
+    service_account_path = "fastlane/Private/Firebase-Service-Account-Key.json"  
+
+    decrypt_files(
+      input_dir: "Encrypted",
+      output_dir: "Private",
+      passphrase_path: "Private/passphrase"
+    )
+
+    increment_build_number_for_firebase(
+      firebase_app_id: firebase_app_id,
+      service_account_path: service_account_path,
+      gradle_file_path: "app/build.gradle"
+    )
+
+    firebase(
+      firebase_app_id: firebase_app_id,
+      service_account_path: service_account_path,
+      groups: "me",
+      notes: "Add notes here",
+    )
+  ensure
+    clean_up
+  end
+end
+
+private_lane :firebase do |options|
+  release = firebase_app_distribution(
+    app: options[:firebase_app_id],
+    service_credentials_file: options[:service_account_path],
+    groups: options[:groups],
+    release_notes: options[:notes]
+  )
+end
+
+private_lane :decrypt_files do |options|
+  input_dir = options[:input_dir]
+  output_dir = options[:output_dir]
+  passphrase_path = options[:passphrase_path]
+  sh "chmod +x Scripts/decrypt_files.sh"
+  sh "Scripts/decrypt_files.sh #{passphrase_path} #{input_dir} #{output_dir}"
+end
+
+private_lane :increment_build_number_for_firebase do |options|
+  latest_release = firebase_app_distribution_get_latest_release(
+    app: options[:firebase_app_id],
+    service_credentials_file: options[:service_account_path]
+  )
+  latest_build_number = latest_release[:buildVersion].to_i
+  increment_version_code(
+    gradle_file_path: options[:gradle_file_path],
+    version_code: (latest_build_number + 1)
+  )
+end
+
+private_lane :clean_up do |options|
+  keychain_name = "fastlane"
+  delete_keychain(
+    name: keychain_name
+  ) if File.exist? File.expand_path("~/Library/Keychains/#{keychain_name}-db")
+end
