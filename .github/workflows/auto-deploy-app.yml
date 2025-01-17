@@ -1,0 +1,111 @@
+name: Auto Deploy App
+
+on:
+  workflow_dispatch:
+
+jobs:
+  # deploy_ios_to_testflight:
+  #   name: Deploy iOS To TestFlight
+  #   runs-on: macos-latest
+  #   steps:
+  #     - name: Checkout
+  #       uses: actions/checkout@v4
+      
+  #     - name: Set up ruby environment
+  #       uses: ruby/setup-ruby@v1
+  #       with:
+  #         working-directory: flutter/ios
+  #         bundler-cache: true
+      
+  #     - name: Set up fvm environment
+  #       run: |
+  #         brew tap leoafarias/fvm
+  #         brew install fvm
+  #         cd flutter
+  #         fvm install
+  #         fvm flutter pub get
+  #         fvm flutter precache --ios
+
+  #     - name: Load passphrase from secrets
+  #       env:
+  #         PASSPHRASE: ${{ secrets.PASSPHRASE }}
+  #       run: |
+  #         cd flutter/ios/fastlane
+  #         mkdir Private
+  #         echo "$PASSPHRASE" > Private/passphrase
+         
+  #     - name: Archive and Upload
+  #       run: |
+  #         cd flutter/ios
+  #         bundle exec pod install
+  #         bundle exec fastlane deploy_to_testflight
+
+  # deploy_ios_to_firebase:
+  #   name: Deploy iOS To Firebase
+  #   runs-on: macos-latest
+  #   steps:
+  #     - name: Checkout
+  #       uses: actions/checkout@v4
+      
+  #     - name: Set up ruby environment
+  #       uses: ruby/setup-ruby@v1
+  #       with:
+  #         working-directory: flutter/ios
+  #         bundler-cache: true
+      
+  #     - name: Set up fvm environment
+  #       run: |
+  #         brew tap leoafarias/fvm
+  #         brew install fvm
+  #         cd flutter
+  #         fvm install
+  #         fvm flutter pub get
+  #         fvm flutter precache --ios
+
+  #     - name: Load passphrase from secrets
+  #       env:
+  #         PASSPHRASE: ${{ secrets.PASSPHRASE }}
+  #       run: |
+  #         cd flutter/ios/fastlane
+  #         mkdir Private
+  #         echo "$PASSPHRASE" > Private/passphrase
+         
+  #     - name: Archive and Upload
+  #       run: |
+  #         cd flutter/ios
+  #         bundle exec pod install
+  #         bundle exec fastlane deploy_to_firebase
+  
+  deploy_android_to_firebase:
+    name: Deploy Android To Firebase
+    runs-on: macos-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up ruby environment
+        uses: ruby/setup-ruby@v1
+        with:
+          working-directory: flutter/android
+          bundler-cache: true
+      
+      - name: Set up fvm environment
+        run: |
+          brew tap leoafarias/fvm
+          brew install fvm
+          cd flutter
+          fvm install
+          fvm flutter pub get
+      
+      - name: Load passphrase from secrets
+        env:
+          PASSPHRASE: ${{ secrets.PASSPHRASE }}
+        run: |
+          cd flutter/android/fastlane
+          mkdir Private
+          echo "$PASSPHRASE" > Private/passphrase
+
+      - name: Archive and Upload
+        run: |
+          cd flutter/android
+          bundle exec fastlane deploy_to_firebase
