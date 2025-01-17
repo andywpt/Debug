@@ -24,7 +24,7 @@ lane :deploy_to_firebase do
     firebase(
       firebase_app_id: firebase_app_id,
       service_account_path: service_account_path,
-      apk_path: "app-release.apk"
+      apk_path: "app-release.apk",
       groups: "me",
       notes: "Add notes here",
     )
