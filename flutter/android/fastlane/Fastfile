@@ -4,7 +4,7 @@ default_platform(:android)
 
 lane :deploy_to_firebase do
   begin
-    firebase_app_id = "1:999673154118:android:70ec47c4bbc2b80f275847"
+    firebase_app_id = "1:999673154118:android:dc16e495e96d358c275847"
     service_account_path = "fastlane/Private/Firebase-Service-Account-Key.json"  
 
     decrypt_files(
@@ -16,17 +16,21 @@ lane :deploy_to_firebase do
     increment_build_number_for_firebase(
       firebase_app_id: firebase_app_id,
       service_account_path: service_account_path,
-      gradle_file_path: "app/build.gradle"
+      gradle_file_path: "../app/build.gradle"
     )
 
-    archive_app(output_dir: "./")
-    sh "ls -1"
+    archive_my_app
+    #author_name = `git log -1 --pretty=format:'%an'`.force_encoding("UTF-8").strip
+    author = "Andy"
+    branch = "fix/修正畫面卡頓問題"
+    commit = `git rev-parse --short=6 HEAD`.strip
+    notes = "#{branch} (#{commit})"
     firebase(
       firebase_app_id: firebase_app_id,
       service_account_path: service_account_path,
-      apk_path: "app-release.apk",
+      apk_path: "../build/app/outputs/flutter-apk/app-release.apk",
       groups: "me",
-      notes: "Add notes here",
+      notes: notes,
     )
   ensure
     clean_up
@@ -46,23 +50,20 @@ private_lane :increment_build_number_for_firebase do |options|
     app: options[:firebase_app_id],
     service_credentials_file: options[:service_account_path]
   )
-  latest_build_number = latest_release[:buildVersion].to_i
-  increment_version_code(
-    gradle_file_path: options[:gradle_file_path],
-    version_code: (latest_build_number + 1)
-  )
+  latest_build_number = latest_release && latest_release[:buildVersion].to_i || 0
+  gradle_file_path = options[:gradle_file_path]
+  sh "chmod +x Scripts/update_version_code.sh"
+  sh "Scripts/update_version_code.sh #{gradle_file_path} #{latest_build_number + 1}"
 end
 
-private_lane :archive_app do |options|
-  output_dir = options[:output_dir]
-  sh "fvm flutter build apk --release --output=#{output_dir}"
+private_lane :archive_my_app do |options|
+  sh "fvm flutter build apk --release"
 end
 
 private_lane :firebase do |options|
   release = firebase_app_distribution(
     app: options[:firebase_app_id],
     service_credentials_file: options[:service_account_path],
-    android_artifact_type: "APK",
     android_artifact_path: options[:apk_path],
     groups: options[:groups],
     release_notes: options[:notes]
