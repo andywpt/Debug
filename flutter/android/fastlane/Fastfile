@@ -7,11 +7,11 @@ lane :deploy_to_firebase do
     firebase_app_id = "1:999673154118:android:70ec47c4bbc2b80f275847"
     service_account_path = "fastlane/Private/Firebase-Service-Account-Key.json"  
 
-    # decrypt_files(
-    #   input_dir: "Encrypted",
-    #   output_dir: "Private",
-    #   passphrase_path: "Private/passphrase"
-    # )
+    decrypt_files(
+      input_dir: "Encrypted",
+      output_dir: "Private",
+      passphrase_path: "Private/passphrase"
+    )
 
     increment_build_number_for_firebase(
       firebase_app_id: firebase_app_id,
