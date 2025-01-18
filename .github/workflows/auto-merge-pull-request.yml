@@ -1,7 +1,7 @@
 name: Auto Merge PR
 on:
   pull_request:
-    branches: [main]
+    branches: [test-main]
 
 permissions:
   contents: write

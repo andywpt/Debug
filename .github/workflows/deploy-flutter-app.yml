@@ -108,4 +108,5 @@ jobs:
       - name: Archive and Upload
         run: |
           cd flutter/android
+          export NOTES="Hello"
           bundle exec fastlane deploy_to_firebase

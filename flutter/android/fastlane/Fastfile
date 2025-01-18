@@ -2,7 +2,7 @@ opt_out_usage
 skip_docs
 default_platform(:android)
 
-lane :deploy_to_firebase do
+lane :deploy_to_firebase
   begin
     firebase_app_id = "1:999673154118:android:dc16e495e96d358c275847"
     test_groups = "me"
@@ -13,7 +13,7 @@ lane :deploy_to_firebase do
       passphrase_path: "Private/passphrase"
     )
 
-    increment_build_number_for_firebase(
+    increment_build_number(
       firebase_app_id: firebase_app_id,
       service_account_path: "fastlane/Private/Firebase-Service-Account-Key.json" ,
       gradle_file_path: "../app/build.gradle"
@@ -21,11 +21,12 @@ lane :deploy_to_firebase do
 
     archive_app
     
-    firebase(
-      firebase_app_id: firebase_app_id,
-      service_account_path: "fastlane/Private/Firebase-Service-Account-Key.json" ,
-      apk_path: "../build/app/outputs/flutter-apk/app-release.apk",
-      groups: test_groups
+    firebase_app_distribution(
+      app: firebase_app_id,
+      service_credentials_file: "fastlane/Private/Firebase-Service-Account-Key.json",
+      android_artifact_path: "../build/app/outputs/flutter-apk/app-release.apk",
+      groups: test_groups,
+      release_notes: ENV["NOTES"]
     )
   ensure
     clean_up
@@ -40,7 +41,7 @@ private_lane :decrypt_files do |options|
   sh "Scripts/decrypt_files.sh #{passphrase_path} #{input_dir} #{output_dir}"
 end
 
-private_lane :increment_build_number_for_firebase do |options|
+private_lane :increment_build_number do |options|
   latest_release = firebase_app_distribution_get_latest_release(
     app: options[:firebase_app_id],
     service_credentials_file: options[:service_account_path]
@@ -53,20 +54,6 @@ end
 
 private_lane :archive_app do |options|
   sh "fvm flutter build apk --release"
-end
-
-private_lane :firebase do |options|
-  branch = `git branch --show-current`.strip
-  commit = `git rev-parse --short=6 HEAD`.strip
-  notes = "#{branch} (#{commit})"
-
-  release = firebase_app_distribution(
-    app: options[:firebase_app_id],
-    service_credentials_file: options[:service_account_path],
-    android_artifact_path: options[:apk_path],
-    groups: options[:groups],
-    release_notes: notes
-  )
 end
 
 private_lane :clean_up do |options|
