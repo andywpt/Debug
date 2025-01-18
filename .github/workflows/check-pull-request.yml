@@ -1,7 +1,7 @@
 name: PR Checks
 on:
   pull_request:
-    branches: [branch_name]
+    branches: [test-main]
 
 permissions:
   contents: write
