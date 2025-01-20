@@ -1,0 +1,61 @@
+opt_out_usage
+skip_docs
+default_platform(:android)
+
+lane :deploy_to_firebase
+  begin
+    firebase_app_id = "1:999673154118:android:dc16e495e96d358c275847"
+    test_groups = "me"
+
+    decrypt_files(
+      input_dir: "Encrypted",
+      output_dir: "Private",
+      passphrase_path: "Private/passphrase"
+    )
+
+    increment_build_number(
+      firebase_app_id: firebase_app_id,
+      service_account_path: "fastlane/Private/Firebase-Service-Account-Key.json" ,
+      gradle_file_path: "../app/build.gradle"
+    )
+
+    archive_app
+    
+    firebase_app_distribution(
+      app: firebase_app_id,
+      service_credentials_file: "fastlane/Private/Firebase-Service-Account-Key.json",
+      android_artifact_path: "../build/app/outputs/flutter-apk/app-release.apk",
+      groups: test_groups,
+      release_notes: ENV["NOTES"]
+    )
+  ensure
+    clean_up
+  end
+end
+
+private_lane :decrypt_files do |options|
+  input_dir = options[:input_dir]
+  output_dir = options[:output_dir]
+  passphrase_path = options[:passphrase_path]
+  sh "chmod +x Scripts/decrypt_files.sh"
+  sh "Scripts/decrypt_files.sh #{passphrase_path} #{input_dir} #{output_dir}"
+end
+
+private_lane :increment_build_number do |options|
+  latest_release = firebase_app_distribution_get_latest_release(
+    app: options[:firebase_app_id],
+    service_credentials_file: options[:service_account_path]
+  )
+  latest_build_number = latest_release && latest_release[:buildVersion].to_i || 0
+  gradle_file_path = options[:gradle_file_path]
+  sh "chmod +x Scripts/update_version_code.sh"
+  sh "Scripts/update_version_code.sh #{gradle_file_path} #{latest_build_number + 1}"
+end
+
+private_lane :archive_app do |options|
+  sh "fvm flutter build apk --release"
+end
+
+private_lane :clean_up do |options|
+  
+end

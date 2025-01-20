@@ -1,0 +1,47 @@
+name: PR Checks
+on:
+  pull_request:
+    branches: [test-main]
+
+permissions:
+  contents: write
+  pull-requests: write
+    
+jobs:
+  run-tests:
+    name: Run tests
+    runs-on: macos-latest
+    steps:
+      - run: |
+          echo "Running tests..."
+
+  all-checks-passed: 
+    name: All Checks Passed 
+    if: always()
+    needs: run-tests
+    runs-on: macos-latest
+    steps:
+      - name: Ensure all required jobs pass successfully
+        uses: re-actors/alls-green@release/v1
+        with:
+          jobs: ${{ toJSON(needs) }}
+
+  after-checks-passed:
+    name: After All Checks Passed
+    needs: all-checks-passed
+    runs-on: macos-latest
+    steps:
+      - name: Create github app token
+        id: app-token
+        uses: actions/create-github-app-token@v1
+        with:
+          app-id: ${{ vars.GH_APP_ID }}
+          private-key: ${{ secrets.GH_APP_PRIVATE_KEY }}
+
+      - name: Approve and squash the pull request
+        env: 
+          GH_TOKEN: ${{ steps.app-token.outputs.token }}
+          PR_URL: ${{github.event.pull_request.html_url}}
+        run: |
+          gh pr comment "$PR_URL" -b "All tests passed 👍"
+          

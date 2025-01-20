@@ -1,5 +1,7 @@
 source "https://rubygems.org"
-ruby File.read(".ruby-version").strip
+ruby "3.3.5" #File.read(".ruby-version").strip
 
 gem "fastlane", "2.226"
 gem "cocoapods", "1.16.2"
+plugins_path = File.join(File.dirname(__FILE__), 'fastlane', 'Pluginfile')
+eval_gemfile(plugins_path) if File.exist?(plugins_path)
