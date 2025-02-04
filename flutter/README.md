@@ -35,13 +35,22 @@
   export PATH="$HOME/.jenv/bin:$PATH"
   eval "$(jenv init -)"
   jenv enable-plugin export   // 同時更新 $JAVA_HOME
-  export JAVA_HOME=$(jenv javahome) // 同時更新 $JAVA_HOME?
   ```
   指令
   ```
-  # Add Java version to jenv (ex: Java 17)
-  jenv add /opt/homebrew/opt/openjdk@17/1ibexec/openjdk.jdk/Contents/Home
+  # Debug
+  jenv doctor
 
+  # 同時更新 $JAVA_HOME
+  jenv enable-plugin export
+  exec $SHELL -l
+  
+  # list jdk and its path
+  /usr/libexec/java_home -V
+  
+  # Add a jdk to jenv
+  jenv add <jdk_path>
+  
   # All added Java versions
   jenv versions
 
@@ -53,9 +62,6 @@
 
   # Current Java version
   java -version (jenv version)
-
-  # Debug
-  jenv doctor
   ```
   </details>
 
